@@ -1,0 +1,32 @@
+Vagrant.configure(2) do |config|
+
+  config.vm.provision :shell, path: "bootstrap.sh"
+  #config.vm.provision "puppet" do |puppet|
+  #  puppet.environment_path = "puppet/environments"
+  #  puppet.environment = "vagrant"
+  #  puppet.facter = {
+  #    "templatedir" => "/tmp/vagrant-puppet/environments/vagrant/templates"
+  #  }
+  #end
+
+  config.vm.define "el7" do |el7|
+    el7.vm.box = "puppetlabs/centos-7.0-64-puppet"
+    el7.vm.hostname = "el7.box"
+  end
+
+  #config.vm.define "precise" do |precise|
+  #  precise.vm.box = "puppetlabs/ubuntu-12.04-64-puppet"
+  #  precise.vm.hostname = "precise.box"
+  #end
+
+  #config.vm.define "trusty" do |trusty|
+  #  trusty.vm.box = "puppetlabs/ubuntu-14.04-64-puppet"
+  #  trusty.vm.hostname = "trusty.box"
+  #end
+
+  #config.vm.define "vivid" do |vivid|
+  #  vivid.vm.box = "ubuntu/vivid64"
+  #  vivid.vm.hostname = "vivid.box"
+  #end
+
+end

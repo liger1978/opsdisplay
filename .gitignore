@@ -1,0 +1,7 @@
+.vagrant*
+*.rpm
+*.tar.gz
+*.deb
+mattermost/puppet/environments/vagrant/modules/*
+tmp/
+.tmp/
