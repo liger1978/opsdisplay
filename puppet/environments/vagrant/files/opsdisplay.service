@@ -1,0 +1,13 @@
+[Unit]
+Description=opsdisplay
+After=syslog.target network.target graphical.target
+
+[Service]
+Type=forking
+WorkingDirectory=/tmp
+#User=<%= @user %>
+ExecStart=/usr/bin/opsdisplay
+#PIDFile=/var/spool/opsdisplay/pid/master.pid
+
+[Install]
+WantedBy=multi-user.target
