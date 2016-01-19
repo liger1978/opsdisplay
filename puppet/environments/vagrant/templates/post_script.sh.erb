@@ -1,0 +1,10 @@
+getent group <%= @group %> >/dev/null || groupadd -f -g <%= @pkg_gid %> -r <%= @group %>
+if ! getent passwd <%= @user %> >/dev/null ; then
+    if ! getent passwd <%= @pkg_uid %> >/dev/null ; then
+      useradd -r -u <%= @pkg_uid %> -g <%= @group %> -d <%= @symlink %> -s /sbin/nologin -c "Mattermost system user" <%= @user %>
+    else
+      useradd -r -g <%= @group %> -d <%= @symlink %> -s /sbin/nologin -c "Mattermost system user" <%= @user %>
+    fi
+fi
+chown -R <%= @user %>:<%= @group %> <%= @dir %>
+exit 0

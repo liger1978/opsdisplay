@@ -1,13 +1,14 @@
 Vagrant.configure(2) do |config|
 
   config.vm.provision :shell, path: "bootstrap.sh"
-  #config.vm.provision "puppet" do |puppet|
-  #  puppet.environment_path = "puppet/environments"
-  #  puppet.environment = "vagrant"
-  #  puppet.facter = {
-  #    "templatedir" => "/tmp/vagrant-puppet/environments/vagrant/templates"
-  #  }
-  #end
+  config.vm.provision "puppet" do |puppet|
+    puppet.environment_path = "puppet/environments"
+    puppet.environment = "vagrant"
+    puppet.facter = {
+      "templatedir" => "/tmp/vagrant-puppet/environments/vagrant/templates"
+      "filedir" => "/tmp/vagrant-puppet/environments/vagrant/templates"
+    }
+  end
 
   config.vm.define "el7" do |el7|
     el7.vm.box = "puppetlabs/centos-7.0-64-puppet"
