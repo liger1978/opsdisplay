@@ -1,17 +1,18 @@
-$build_dependencies {
+$build_dependencies = {
   'rpm-build' =>  {},
   'gcc'       =>  {},
   'ruby-devel' => {},
   'fpm'        => {
     provider => 'gem',
-    require  => [Package['rpm-build', 'gcc', 'ruby-devel'],
+    require  => [Package['rpm-build', 'gcc', 'ruby-devel']],
   }
 }
-ensure_packages($build_dependencies)
+create_resources(package, $build_dependencies)
 
 exec{ 'build':
   cwd      => '/vagrant',
-  command  => '/bin/make'
-  path     => '/bin/:/usr/bin/',
+  command  => 'make',
+  path     =>
+    '/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin',
   require  => Package['fpm'],
 }
