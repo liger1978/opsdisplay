@@ -12,6 +12,7 @@ DISPLAY=:0.$screen matchbox-window-manager -use_cursor no \
                                         -use_titlebar no \
                                         -theme blondie \
                                         -use_desktop_mode plain &
+sleep 60
 
 # Start opera on this screen
 DISPLAY=:0.$screen opera -fullscreen -personaldir /tmp/opsdisplay/screen$screen \
