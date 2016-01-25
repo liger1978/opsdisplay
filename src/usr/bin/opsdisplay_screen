@@ -12,18 +12,38 @@ DISPLAY=:0.$screen matchbox-window-manager -use_cursor no \
                                         -use_titlebar no \
                                         -theme blondie \
                                         -use_desktop_mode plain &
-sleep 60
 
 # Start opera on this screen
 DISPLAY=:0.$screen opera -fullscreen -personaldir /tmp/opsdisplay/screen$screen \
                          -windowname "$screen" 'https://www.google.co.uk/maps/@51.5044484,-0.1056524,3z?hl=en' &
-sleep 60
+sleep 10
 
 # Cycle through URLs for this screen
 while true; do
   for url in `cat /etc/opsdisplay.d/screen$screen | awk /^http/`; do
+    retry_sleep_acc=0
+    # Ensure primary opera session for this screen is running correctly
+    retry=0
+    while ! ps -x | grep opera | grep -q "windowname $screen"; do
+      retry=$((retry+1))
+      # Give up if more than 3 attempts
+      if [ $retry -gt 3 ]; then
+       exit 1
+      fi
+      retry_sleep=$(((screen*2)+10))
+      retry_sleep_acc=$((retry_sleep_acc+retry_sleep))
+      echo "Retry $retry, screen $screen"
+      DISPLAY=:0.$screen opera -fullscreen -personaldir /tmp/opsdisplay/screen$screen \
+                               -windowname "$screen" 'https://www.google.co.uk/maps/@51.5044484,-0.1056524,3z?hl=en' &
+      sleep $retry_sleep
+    done
     DISPLAY=:0.$screen opera -remote 'openURL('$url')' -windowname "$screen" \
                              -personaldir /tmp/opsdisplay/screen$screen
-    sleep $delay
+    # Sync up the screens if possible
+    if [ $((delay-retry_sleep_acc)) -lt 10 ]; then
+      sleep 10
+    else
+      sleep $((delay-retry_sleep_acc))
+    fi
   done
 done
