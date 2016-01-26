@@ -1,6 +1,7 @@
 #!/bin/bash
 screen=$1
 delay=$2
+default_url='https://www.google.co.uk/maps/@51.5044484,-0.1056524,3z?hl=en'
 
 # Ensure silent fullscreen Opera startup
 rm -rf /tmp/opsdisplay/screen$screen
@@ -14,8 +15,10 @@ DISPLAY=:0.$screen matchbox-window-manager -use_cursor no \
                                         -use_desktop_mode plain &
 
 # Start opera on this screen
-DISPLAY=:0.$screen opera -fullscreen -personaldir /tmp/opsdisplay/screen$screen \
-                         -windowname "$screen" 'https://www.google.co.uk/maps/@51.5044484,-0.1056524,3z?hl=en' &
+logger -t opsdisplay "screen$screen $default_url"
+DISPLAY=:0.$screen opera -fullscreen \
+                         -personaldir /tmp/opsdisplay/screen$screen \
+                         -windowname "$screen" "$default_url" &
 sleep 10
 
 # Cycle through URLs for this screen
@@ -33,10 +36,13 @@ while true; do
       retry_sleep=$(((screen*2)+10))
       retry_sleep_acc=$((retry_sleep_acc+retry_sleep))
       echo "Retry $retry, screen $screen"
-      DISPLAY=:0.$screen opera -fullscreen -personaldir /tmp/opsdisplay/screen$screen \
-                               -windowname "$screen" 'https://www.google.co.uk/maps/@51.5044484,-0.1056524,3z?hl=en' &
+      logger -t opsdisplay "screen$screen $default_url"
+      DISPLAY=:0.$screen opera -fullscreen \
+                               -personaldir /tmp/opsdisplay/screen$screen \
+                               -windowname "$screen" "$default_url" &
       sleep $retry_sleep
     done
+    logger -t opsdisplay "screen$screen $url"
     DISPLAY=:0.$screen opera -remote 'openURL('$url')' -windowname "$screen" \
                              -personaldir /tmp/opsdisplay/screen$screen
     # Sync up the screens if possible
