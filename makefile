@@ -1,6 +1,6 @@
 # Package opsdisplay for EL7.
 PKG_NAME=opsdisplay
-VERSION=1.9
+VERSION=2.0
 RELEASE=1.el7
 ARCH=x86_64
 DESCRIPTION=Display Opera browser in full-screen mode on multiple screens (e.g. in an ops center)
@@ -41,6 +41,7 @@ package:
 	-d xorg-x11-server-Xorg -d xorg-x11-utils -d xorg-x11-xauth \
 	-d xorg-x11-xinit -d xvattr \
 	-d util-linux -d gtk2 -d liberation-fonts-common -d liberation-sans-fonts \
+	-d pulseaudio \
 	usr/bin/opsdisplay \
 	usr/bin/opsdisplay_screen \
 	etc/opsdisplay \

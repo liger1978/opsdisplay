@@ -6,6 +6,9 @@
 # Start X server
 X :0 &
 
+# Start audio
+pulseaudio &
+
 # Start screens
 screen=0
 while [ $screen -lt $number_of_screens ]; do
