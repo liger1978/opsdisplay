@@ -25,9 +25,36 @@ sleep 10
 while true; do
   for url in `cat /etc/opsdisplay.d/screen$screen | awk /^http/`; do
     retry_sleep_acc=0
+    # Lets check if Opera has crashed and, if so, restart everything
+    if ps x | grep -q ".*[o]pera.*crashlog.*screen$screen"; then
+      # Restart all opera processes for this screen
+      retry=0
+      while ps x | grep -q ".*[o]pera.*screen$screen"; do
+        retry=$((retry+1))
+        if [ $retry -gt 3 ]; then
+         exit 1
+        fi
+        retry_sleep_acc=$((retry_sleep_acc+10))
+        echo "Opera crashed retry $retry, screen $screen"
+        for pid in `ps x | grep ".*[o]pera.*screen$screen" | awk '{print $1}'`; do
+          kill -9 $pid
+        done
+        sleep 10
+      done
+      rm -rf /tmp/opsdisplay/screen$screen
+      mkdir -p /tmp/opsdisplay/screen$screen
+      cp /etc/opsdisplay_operaprefs.ini /tmp/opsdisplay/screen$screen/operaprefs.ini
+      logger -t opsdisplay "screen$screen $default_url"
+      DISPLAY=:0.$screen opera -fullscreen \
+                         -personaldir /tmp/opsdisplay/screen$screen \
+                         -windowname "$screen" "$default_url" &
+      sleep 10
+      retry_sleep_acc=$((retry_sleep_acc+10))
+    fi
+    
     # Ensure primary opera session for this screen is running correctly
     retry=0
-    while ! ps -x | grep opera | grep -q "windowname $screen"; do
+    while ! ps x | grep opera | grep -q "windowname $screen"; do
       retry=$((retry+1))
       # Give up if more than 3 attempts
       if [ $retry -gt 3 ]; then

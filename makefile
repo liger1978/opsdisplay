@@ -1,6 +1,6 @@
 # Package opsdisplay for EL7.
 PKG_NAME=opsdisplay
-VERSION=2.1
+VERSION=2.4
 RELEASE=1.el7
 ARCH=x86_64
 DESCRIPTION=Display Opera browser in full-screen mode on multiple screens (e.g. in an ops center)

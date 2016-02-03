@@ -1,2 +1,6 @@
 number_of_screens=8
 rotation_delay=180
+combine_audio_outputs=yes
+use_proxy=no
+#proxy=
+#no_proxy=

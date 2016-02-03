@@ -3,11 +3,34 @@
 # Read config file
 . /etc/opsdisplay
 
+# Set proxy
+if [ "$use_proxy" = "yes" ]; then
+ export http_proxy=http://${proxy}
+ export https_proxy=${http_proxy}
+ export no_proxy=${no_proxy}
+fi
+
 # Start X server
 X :0 &
 
 # Start audio
 pulseaudio &
+
+if [ "$combine_audio_outputs" = "yes" ]; then
+
+  # Wait for pulse to be ready to take commands
+  while ! pacmd list-sinks > /dev/null 2>&1 ; do
+    sleep 1
+  done
+
+  # Create combined sink
+  sinks=`pacmd list-sinks | grep 'name:' |
+         sed -e 's/^[[:space:]]\+name\:[[:space:]]\+<//g' -e 's/>//g' |
+         tr '\n' ',' | head -c -1`
+  pacmd load-module module-combine-sink sink_name=combined slaves=$sinks
+  pacmd set-default-sink combined
+
+fi
 
 # Start screens
 screen=0
